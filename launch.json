@@ -1,0 +1,17 @@
+{
+    "type": "gdb",
+    "request": "attach",
+    "name": "Attach to gdbServer",
+    "executable": "${workspaceRoot}/n7OS/kernel.bin",
+    "target": ":1235",
+    "remote": true,
+    "cwd": "${workspaceRoot}",
+    "debugger_args": ["-i=mi"],
+    "valuesFormatting": "parseText",
+    "autorun": [
+        "dir kernel",
+        "dir boot",
+        "dir lib",
+        "dir bin"
+    ]
+}
