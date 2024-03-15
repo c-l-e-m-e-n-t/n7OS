@@ -1,14 +1,15 @@
 .text
 # cette directive sert a rendre l'etiquette publique
-    .globl handler_IT_20
+    .globl handler_IT_32
 # debut du traitant
-handler_IT_20:
+handler_IT_32:
 # sauvegarde des registres importants
     pushl %eax
     pushl %edx
     pushl %ecx
 # appel a la fonction C realisant le traitant
-    call handler_20
+    call handler_32
+
 # restauration des registres importants
     popl %ecx
     popl %edx

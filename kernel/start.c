@@ -22,6 +22,7 @@ void kernel_start(void)
         //set le curseur
         //set_cursor2(5, 7);
         // affichage de Hello, World!
+        //__asm__ __volatile__("mov␣%0,␣%%cr3"::"r"(&dir ));
         
     }
 }
