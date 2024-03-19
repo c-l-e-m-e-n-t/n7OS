@@ -1,6 +1,10 @@
 #include <n7OS/irq.h>
 #include <n7OS/cpu.h>
 #include <n7OS/time.h>
+#include <n7OS/console.h>
+
+uint32_t time = 0;
+uint32_t h, m, s;
 
 //initialisation du timer d'1 KHz
 void timer1kHz() {
@@ -23,12 +27,7 @@ void desactiver_timer() {
     outb(inb(0x21)|0x01, 0x21);
 }
 
-//refresh de l'affichage de l'horloge
-void update_horloge() {
-    uint32_t h, m, s;
-    s = (time/1000)%60;
-    m = ((time/1000)%3600)/60;
-    h = ((time/1000)/3600)%24;
+void affichage_time() {
     set_cursor2(0,72);
     if (s<10)
         if(m<10)
@@ -52,4 +51,11 @@ void update_horloge() {
                 printf("0%d:%d:%d\n", h, m, s);
             else
                 printf("%d:%d:%d\n", h, m, s);
+}
+
+//refresh de l'affichage de l'horloge
+void update_horloge() {
+    s = (time/1000)%60;
+    m = ((time/1000)%3600)/60;
+    h = ((time/1000)/3600)%24;
 }

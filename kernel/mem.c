@@ -1,5 +1,18 @@
 #include <n7OS/mem.h>
 
+uint32_t *page_table;
+
+void initialise_paging() {
+    page_table = (uint32_t) kmalloc(PAGE_SIZE*1024);
+    for (int i = 0; i < 1024; i++) {
+        ((uint32_t*) page_table)[i] = 0;
+    }
+    __asm__ __volatile__("mov %0, %%cr3":: "r" (page_table));
+    uint32_t cr0;
+    __asm__ __volatile__("mov %%cr0, %0": "=r" (cr0));
+    cr0 |= 0x80000000;
+    __asm__ __volatile__("mov %0, %%cr0":: "r" (cr0));
+}
 
 /**
  * @brief Marque la page allouée
@@ -8,18 +21,9 @@
  * 
  * @param addr Adresse de la page à allouer
  */
+
 void setPage(uint32_t addr) {
-    PageTable new_page_table = (PageTable) kmalloc(sizeof(Page_Table_Entry)*1024);
-    for (int i = 0; i < 1024; i++) {
-        new_page_table[i].present = 0;
-        new_page_table[i].rw = 0;
-        new_page_table[i].user = 0;
-        new_page_table[i].accessed = 0;
-        new_page_table[i].dirty = 0;
-        new_page_table[i].unused = 0;
-        new_page_table[i].frame = 0;
-    }
-    page_table[addr/0x1000] = new_page_table;
+    page_table[addr/0x1000] = 1;
 }
 
 /**
@@ -30,7 +34,7 @@ void setPage(uint32_t addr) {
  * @param addr Adresse de la page à libérer
  */
 void clearPage(uint32_t addr) {
-    kfree(page_table[addr/0x1000]);
+    free(page_table[addr/0x1000]);
     page_table[addr/0x1000] = 0;
 }
 
@@ -56,9 +60,9 @@ uint32_t findfreePage() {
  * 
  */
 void init_mem() {
-    page_table = (PageTable*) kmalloc(0x1000);
+    page_table = (uint32_t) kmalloc(PAGE_SIZE*1024);
     for (int i = 0; i < 1024; i++) {
-        page_table[i] = 0;
+        ((uint32_t*) page_table)[i] = 0;
     }
 }
 

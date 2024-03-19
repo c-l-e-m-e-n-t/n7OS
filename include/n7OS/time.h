@@ -8,4 +8,4 @@ void activer_timer();
 
 void update_horloge();
 
-uint32_t time;
+extern uint32_t time;

@@ -39,8 +39,17 @@
 
 void init_console();
 
-void set_cursor2(uint8_t x, uint8_t y);
+/* mettre a jour la position du curseur sous la forme d'un int*/
 void set_cursor(uint16_t pos);
+
+/* mettre a jour la position du curseur a partir de la ligne et de la colonne */
+void set_cursor2(uint8_t x, uint8_t y);
+
+/* renvoi la position du curseur sous la forme d'un int*/
+uint16_t get_cursor();
+
+/* renvoi la position du curseur sous la forme de deux int (ligne, colonne)*/
+void get_cursor2(uint8_t *x, uint8_t *y);
 
 /*
  * This is the function called by printf to send its output to the screen. You
