@@ -4,6 +4,9 @@
         "irq.h": "c",
         "keyboard.h": "c",
         "console.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "stdio.h": "c",
+        "paging.h": "c",
+        "stddef.h": "c"
     }
 }

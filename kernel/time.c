@@ -3,9 +3,18 @@
 #include <n7OS/time.h>
 #include <n7OS/console.h>
 #include <stdio.h>
+#include <n7OS/processus.h>
+#include <stddef.h>
 
 uint32_t time = 0;
 uint32_t h, m, s;
+typedef struct  {
+    pid_t pid;
+    uint32_t time;
+    struct wakeUpList *next;
+}wakeUpList;
+
+wakeUpList *wakeUp = NULL;
 
 //initialisation du timer d'1 KHz
 void timer1kHz() {
@@ -62,4 +71,37 @@ void update_horloge() {
     m = ((time/1000)%3600)/60;
     h = ((time/1000)/3600)%24;
     affichage_time();
+    
+    //verifier si un processus doit se reveiller
+    wakeUpList *tmp = wakeUp;
+    wakeUpList *prev = NULL;
+    while (tmp != NULL) {
+        if (tmp->time <= time) {
+            unlock(tmp->pid);
+            if (prev == NULL) {
+                wakeUp = tmp->next;
+                free(tmp);
+                tmp = wakeUp;
+            } else {
+                prev->next = tmp->next;
+                free(tmp);
+                tmp = prev->next;
+            }
+        } else {
+            prev = tmp;
+            tmp = tmp->next;
+        }
+    }
+}
+
+int getTimer() {
+    return time;
+}
+
+void wakeUpPid(pid_t pid, uint32_t time) {
+    wakeUpList *new = malloc(sizeof(wakeUpList));
+    new->pid = pid;
+    new->time = time;
+    new->next = wakeUp;
+    wakeUp = new;
 }
