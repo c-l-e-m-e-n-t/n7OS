@@ -1,0 +1,25 @@
+{
+    // Utilisez IntelliSense pour en savoir plus sur les attributs possibles.
+    // Pointez pour afficher la description des attributs existants.
+    // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "gdb",
+            "request": "attach",
+            "name": "Attach to gdbServer",
+            "executable": "${workspaceRoot}/kernel.bin",
+            "target": ":1234",
+            "remote": true,
+            "cwd": "${workspaceRoot}",
+            "debugger_args": ["-i=mi"],
+            "valuesFormatting": "parseText",
+            "autorun": [
+                "dir kernel",
+                "dir boot",
+                "dir lib",
+                "dir bin"
+            ]
+        }
+    ]
+}

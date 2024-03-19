@@ -1,33 +1,78 @@
-// #include <n7OS/paging.h>
-// #include <stddef.h> // nécessaire pour NULL
+#include "n7OS/paging.h"
+#include "n7OS/kheap.h"
+#include "string.h"
+#include "n7OS/mem.h"
+#include "stdio.h"
 
-// void initialise_paging() {
-//     PageDirectory *dir = (PageDirectory*) kmalloc(sizeof(PageDirectory));
-//     for (int i = 0; i < 1024; i++) {
-//         dir[i].present = 0;
-//         dir[i].rw = 0;
-//         dir[i].user = 0;
-//         dir[i].accessed = 0;
-//         dir[i].dirty = 0;
-//         dir[i].unused = 0;
-//         dir[i].frame = 0;
-//     }
-//     __asm__ __volatile__("mov␣%0,␣%%cr3"::"r"(&dir ));
-//     uint32_t cr0;
-//     __asm__ __volatile__("mov␣%0,␣%%cr0"::"r"(&dir ));
-// }
+PageDirectory pageDirectory;
 
-// PageTable alloc_page_entry(uint32_t address, int is_writeable, int is_kernel) {
-//     PageTable pgtab= NULL;
-//     pgtab = (PageTable) kmalloc(sizeof(Page_Table_Entry)*1024);
-//     for (int i = 0; i < 1024; i++) {
-//         pgtab[i].present = 0;
-//         pgtab[i].rw = is_writeable;
-//         pgtab[i].user = is_kernel;
-//         pgtab[i].accessed = 0;
-//         pgtab[i].dirty = 0;
-//         pgtab[i].unused = 0;
-//         pgtab[i].frame = 0;
-//     }
-//     return pgtab;
-// }
+void setPageEntry(PTE *page_table_entry, uint32_t new_page, int is_writeable, int is_kernel) {
+    page_table_entry->page_entry.present= 1;
+    page_table_entry->page_entry.accessed= 0;
+    page_table_entry->page_entry.dirty= 0;
+    page_table_entry->page_entry.rw= is_writeable;
+    page_table_entry->page_entry.user= ~is_kernel;
+    page_table_entry->page_entry.page= new_page>>12;
+}
+
+void loadPageDirectory(unsigned int *pageDirectory) {
+    __asm__ __volatile__("mov %0, %%cr3":: "r" (pageDirectory));
+}
+
+void enablePaging() {
+    uint32_t cr0;
+    __asm__ __volatile__(
+        "\n\tmovl %%cr0, %%eax"
+        "\n\torl $0x80000000, %%eax"
+        "\n\tmovl %%eax, %%cr0"::
+    );
+}
+
+void initialise_paging() {
+
+    uint32_t index = 0;
+    
+    init_mem();
+
+    pageDirectory = (PageDirectory) kmalloc_a (sizeof(PDE)*1024);
+    memset(pageDirectory, 0, sizeof(PDE)*1024);
+    
+    for (int i= 0; i<1024; ++i) {
+        PageTable new_page_table = (PageTable) kmalloc_a(sizeof(PTE)*1024);
+        memset(new_page_table, 0, sizeof(PTE)*1024);
+        pageDirectory[i].value = (uint32_t) new_page_table|PAGE_PRESENT|PAGE_RW;
+        index= (uint32_t) new_page_table + sizeof(PTE) * 1024;
+    }
+
+    for (int i= 0; i<index; i += PAGE_SIZE) {
+        alloc_page_entry(i, 1, 1);
+    }
+
+    loadPageDirectory((unsigned int *)pageDirectory);
+    enablePaging();
+
+}
+
+PageTable alloc_page_entry(uint32_t address, int is_writeable, int is_kernel ) {
+    // address = adresse virtuelle à allouer 
+    // address = idx_PDE | idx_PTE | offset
+    //             10    |    10   |   12
+
+    int idx_pagedir = address >> 22 ; // calcul de la position de la table de page dans le répertoire de page
+    PageTable page_table;
+    
+    PDE *page_dir_entry = &pageDirectory[idx_pagedir]; // on recupere l'entree dans le répertoire de page
+    // une entree contient l'adresse de la table de page + bits de controle
+
+    page_table = (PageTable) (page_dir_entry->value & 0xFFFFF000); // on recupere l'adresse de la table de page
+        
+    uint32_t phy_page = findfreePage(); // recherche d'une page libre dans la memoire physique
+
+    int idx_pagetab = (address >> 12) & 0x3FF; // calcul de la position de la page dans la table de page
+    
+    
+    // mise a jour de l'entree dans la page de table
+    setPageEntry(&page_table[idx_pagetab], phy_page, is_writeable, is_kernel);
+
+    return page_table;
+}

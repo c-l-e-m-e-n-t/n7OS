@@ -2,6 +2,7 @@
 #include <n7OS/cpu.h>
 #include <n7OS/time.h>
 #include <n7OS/console.h>
+#include <stdio.h>
 
 uint32_t time = 0;
 uint32_t h, m, s;
@@ -28,6 +29,7 @@ void desactiver_timer() {
 }
 
 void affichage_time() {
+    uint32_t curseur = get_cursor();
     set_cursor2(0,72);
     if (s<10)
         if(m<10)
@@ -51,6 +53,7 @@ void affichage_time() {
                 printf("0%d:%d:%d\n", h, m, s);
             else
                 printf("%d:%d:%d\n", h, m, s);
+    set_cursor(curseur);
 }
 
 //refresh de l'affichage de l'horloge
@@ -58,4 +61,5 @@ void update_horloge() {
     s = (time/1000)%60;
     m = ((time/1000)%3600)/60;
     h = ((time/1000)/3600)%24;
+    affichage_time();
 }

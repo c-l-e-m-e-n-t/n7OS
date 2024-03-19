@@ -13,13 +13,18 @@ void kernel_start(void)
     timer1kHz();
     avtiver_timer();
     logo();
+
     // initialisation du clavier
     init_keyboard();
     activer_keyboard();
+
     // lancement des interruptions
     sti();
     // initialisation des interruptions
     init_irq();
+
+    // initialisation du paging
+    initialise_paging();
 
     set_cursor2(0, 0);
 

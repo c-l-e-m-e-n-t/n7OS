@@ -1,18 +1,7 @@
 #include <n7OS/mem.h>
+#include <stdio.h>
 
 uint32_t *page_table;
-
-void initialise_paging() {
-    page_table = (uint32_t) kmalloc(PAGE_SIZE*1024);
-    for (int i = 0; i < 1024; i++) {
-        ((uint32_t*) page_table)[i] = 0;
-    }
-    __asm__ __volatile__("mov %0, %%cr3":: "r" (page_table));
-    uint32_t cr0;
-    __asm__ __volatile__("mov %%cr0, %0": "=r" (cr0));
-    cr0 |= 0x80000000;
-    __asm__ __volatile__("mov %0, %%cr0":: "r" (cr0));
-}
 
 /**
  * @brief Marque la page allouée
