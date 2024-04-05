@@ -1,0 +1,2 @@
+void updateTime();
+void startSnake();

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <n7OS/processus.h>
 #include <stddef.h>
+#include <n7OS/snake.h>
 
 uint32_t time = 0;
 uint32_t h, m, s;
@@ -40,28 +41,7 @@ void desactiver_timer() {
 void affichage_time() {
     uint32_t curseur = get_cursor();
     set_cursor2(0,72);
-    if (s<10)
-        if(m<10)
-            if (h<10)
-                printf("0%d:0%d:0%d\n", h, m, s);
-            else
-                printf("%d:0%d:0%d\n", h, m, s);
-        else
-            if (h<10)
-                printf("0%d:%d:0%d\n", h, m, s);
-            else
-                printf("%d:%d:0%d\n", h, m, s);
-    else
-        if(m<10)
-            if (h<10)
-                printf("0%d:0%d:%d\n", h, m, s);
-            else
-                printf("%d:0%d:%d\n", h, m, s);
-        else
-            if (h<10)
-                printf("0%d:%d:%d\n", h, m, s);
-            else
-                printf("%d:%d:%d\n", h, m, s);
+    printf("%02d:%02d:%02d\n", h, m, s);
     set_cursor(curseur);
 }
 
@@ -71,6 +51,9 @@ void update_horloge() {
     m = ((time/1000)%3600)/60;
     h = ((time/1000)/3600)%24;
     affichage_time();
+    if (time % 100 == 0) {
+        update_snake();
+    }
     
     //verifier si un processus doit se reveiller
     wakeUpList *tmp = wakeUp;

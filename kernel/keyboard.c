@@ -2,6 +2,7 @@
 #include <n7OS/cpu.h>
 #include <n7OS/keyboard.h>
 #include <n7OS/console.h>
+#include <n7OS/snake.h>
 
 uint8_t c;
 
@@ -47,7 +48,7 @@ char keyMap[] = {
     'm',    // 38
     '?',    // 39
     '²',    // 40
-    'maj', // 41 majuscule
+    'maj',  // 41 majuscule
     '*',    // 42
     'w',    // 43
     'x',    // 44
@@ -93,7 +94,7 @@ char keyMap[] = {
     '7',    // 83
     'page', // 84
     'F11',  // 85
-    'F12',    // 86
+    'F12',  // 86
     '+',    // 87
     '-',    // 88
     '.',    // 89
@@ -144,6 +145,9 @@ void update_keyboard() {
                     printf(" ");
                     set_cursor(get_cursor()-1);
                 }
+                break;
+            case 51:
+                mainSnake();
                 break;
             default:
                 printf("%c",keyMap[c-1]);
