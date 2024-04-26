@@ -1,7 +1,9 @@
 #include <n7OS/mem.h>
 #include <stdio.h>
+#include <n7OS/kheap.h>
 
 uint32_t *page_table;
+uint32_t nombrepages= 0x10000000/PAGE_SIZE;
 
 /**
  * @brief Marque la page allouée
@@ -23,7 +25,7 @@ void setPage(uint32_t addr) {
  * @param addr Adresse de la page à libérer
  */
 void clearPage(uint32_t addr) {
-    free(page_table[addr/0x1000]);
+    //free(page_table[addr/0x1000]);
     page_table[addr/0x1000] = 0;
 }
 
@@ -34,7 +36,7 @@ void clearPage(uint32_t addr) {
  */
 uint32_t findfreePage() {
     uint32_t adresse= 0x0;
-    for (int i = 0; i < 1024; i++) {
+    for (int i = 0; i < nombrepages; i++) {
         if (page_table[i] == 0) {
             adresse = i*0x1000;
             setPage(adresse);
@@ -49,8 +51,8 @@ uint32_t findfreePage() {
  * 
  */
 void init_mem() {
-    page_table = (uint32_t) kmalloc(PAGE_SIZE*1024);
-    for (int i = 0; i < 1024; i++) {
+    page_table = (uint32_t *) kmalloc(nombrepages*sizeof(uint32_t));
+    for (int i = 0; i < nombrepages; i++) {
         ((uint32_t*) page_table)[i] = 0;
     }
 }

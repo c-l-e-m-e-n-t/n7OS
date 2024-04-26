@@ -5,11 +5,15 @@
 #include <n7OS/irq.h>
 #include <n7OS/time.h>
 #include <n7OS/keyboard.h>
+#include <n7OS/paging.h>
+#include <n7OS/kheap.h>
 
 void kernel_start(void)
 {
     init_console();
-    setup_base(0 /* la memoire virtuelle n'est pas encore definie */);
+    kheap_init();
+    uint32_t pageDirectory = initialise_paging();
+    setup_base(pageDirectory /* la memoire virtuelle n'est pas encore definie */);
     logo();
     
     timer1kHz();
@@ -19,13 +23,11 @@ void kernel_start(void)
     init_keyboard();
     activer_keyboard();
 
-    // lancement des interruptions
-    sti();
     // initialisation des interruptions
     init_irq();
+    // lancement des interruptions
+    sti();
 
-    // initialisation du paging
-    //initialise_paging();
 
     set_cursor2(0, 0);
 

@@ -52,7 +52,7 @@ void update_horloge() {
     h = ((time/1000)/3600)%24;
     affichage_time();
     if (time % 100 == 0) {
-        update_snake();
+        //update_snake();
     }
     
     //verifier si un processus doit se reveiller

@@ -7,6 +7,8 @@
 
 #include <inttypes.h>
 
+uint32_t kheap_init();
+
 /**
  * @brief Alloue une zone mémoire de taille sz. C'est une version simplifiée de kmalloc().
  * 

@@ -48,6 +48,11 @@ uint32_t initialise_paging() {
         alloc_page_entry(i, 1, 1);
         //printf("Allocated page at %x\n", i);
     }
+    int idx_pagedir= (index-PAGE_SIZE<<1)>>22;
+    PDE page_dir_entry= pageDirectory[idx_pagedir];
+    PageTable page_table= (PageTable) (page_dir_entry.value & 0xFFFFF000);
+    PTE page_table_entry= page_table[0];
+    printf("%x\n", page_table_entry.page_entry.page);
 
     loadPageDirectory((unsigned int *)pageDirectory);
     

@@ -49,4 +49,7 @@ return __res;\
 
 int example();
 
+#define NR_shutdown 1
+int shutdown(int n);
+
 #endif

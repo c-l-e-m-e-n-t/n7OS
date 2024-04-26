@@ -147,7 +147,7 @@ void update_keyboard() {
                 }
                 break;
             case 51:
-                mainSnake();
+                //mainSnake();
                 break;
             default:
                 printf("%c",keyMap[c-1]);
