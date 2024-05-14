@@ -45,7 +45,7 @@ uint32_t initialise_paging() {
     }
 
     for (int i= 0; i<index; i += PAGE_SIZE) {
-        alloc_page_entry(i, 1, 1);
+        alloc_page_entry(i, 1, 0);
         //printf("Allocated page at %x\n", i);
     }
 
@@ -78,3 +78,4 @@ PageTable alloc_page_entry(uint32_t address, int is_writeable, int is_kernel ) {
 
     return page_table;
 }
+

@@ -54,7 +54,7 @@ void update_horloge() {
     if (time % 100 == 0) {
         //update_snake();
     }
-    if (time % 10 == 0) {
+    if (time % 1000 == 0) {
         schedule();
     }
     

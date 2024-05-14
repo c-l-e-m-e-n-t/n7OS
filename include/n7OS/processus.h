@@ -15,18 +15,17 @@ typedef enum {
     BLOQUE
 } processus_state_t;
 
+typedef void* (*fnptr)();
 
 typedef struct {
     pid_t pid;
     char *name;
     char *description;
     processus_state_t state;
+    fnptr function;
     uint32_t *stack;
-    uint32_t *stack_top;
     uint32_t regs[5];
 } processus_t;
-
-typedef void* (*fnptr)();
 
 pid_t fork(const char *name, fnptr function);
 

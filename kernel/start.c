@@ -7,7 +7,7 @@
 #include <n7OS/keyboard.h>
 #include <n7OS/paging.h>
 #include <n7OS/kheap.h>
-#include "/home/ccognard/Annee2/S2/Systeme/Projet/n7OS/bin/processus.h"
+#include "../bin/processus.h"
 
 void kernel_start(void)
 {
@@ -15,7 +15,7 @@ void kernel_start(void)
     kheap_init();
     uint32_t pageDirectory = initialise_paging();
     setup_base(pageDirectory /* la memoire virtuelle n'est pas encore definie */);
-    logo();
+    //logo();
     
     timer1kHz();
     avtiver_timer();
@@ -30,8 +30,10 @@ void kernel_start(void)
     sti();
 
     //initialisation des processus
+    init_processus();
     creer_processus("idle", idle);
     creer_processus("proc1", processus1);
+    //creer_processus("proc1", processus1);
     
     // on ne doit jamais sortir de kernel_start
     while (1) {

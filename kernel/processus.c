@@ -5,6 +5,13 @@
 processus_t process_list[NB_PROC];
 int compteur;
 
+void init_processus() {
+    for (int i=0; i<NB_PROC; i++) {
+        process_list[i].pid = 0;
+    }
+    compteur = 0;
+}
+
 pid_t fork(const char *name, fnptr function) {
     //trouver un pid libre
     pid_t pid = 0;
@@ -20,18 +27,19 @@ pid_t fork(const char *name, fnptr function) {
     }
     
     //création du processus dans une page libre
-    uint32_t *stack = 
+    uint32_t stack[STACK_SIZE]; 
     process_list[pid-1].pid = pid;
     process_list[pid-1].name = name;
     process_list[pid-1].description = "";
     process_list[pid-1].state = PRET;
     process_list[pid-1].stack = stack;
-    process_list[pid-1].stack_top = stack + STACK_SIZE;
+    process_list[pid-1].function = function;
     process_list[pid-1].regs[0] = 0;
-    process_list[pid-1].regs[1] = stack + STACK_SIZE;
+    process_list[pid-1].regs[1] = stack + STACK_SIZE - 1;
     process_list[pid-1].regs[2] = 0;
     process_list[pid-1].regs[3] = 0;
     process_list[pid-1].regs[4] = 0;
+    stack[STACK_SIZE-1] = process_list[pid].regs;
 }
 
 int exit(){
@@ -61,16 +69,11 @@ void creer_processus(const char *name, fnptr function) {
     if (pid == -1) {
         return;
     }
-    process_list[pid-1].state = PRET;
-    process_list[pid-1].regs[0] = (uint32_t)function;
-    process_list[pid-1].regs[1] = process_list[pid-1].stack + STACK_SIZE;
-    process_list[pid-1].regs[2] = 0;
-    process_list[pid-1].regs[3] = 0;
-    process_list[pid-1].regs[4] = 0;
 }
 
 void schedule() {
     if (process_list[(compteur)%NB_PROC].state == PRET){
+        printf("Processus %d\n", compteur%NB_PROC);
         process_list[(compteur-1)%NB_PROC].state = PRET;
         process_list[compteur%NB_PROC].state = ELU;
         ctx_sw(process_list[(compteur-1)%NB_PROC].regs, process_list[compteur%NB_PROC].regs);
