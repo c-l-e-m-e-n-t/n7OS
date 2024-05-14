@@ -4,7 +4,7 @@
 #include <inttypes.h>
 #include "paging.h"
 
-#define NB_PROC 10
+#define NB_PROC 255
 #define STACK_SIZE 1024
 
 typedef uint32_t pid_t;
@@ -23,6 +23,7 @@ typedef struct {
     processus_state_t state;
     uint32_t *stack;
     uint32_t *stack_top;
+    uint32_t regs[5];
 } processus_t;
 
 typedef void* (*fnptr)();
@@ -36,5 +37,9 @@ pid_t getpid();
 int sleep(uint32_t time);
 
 int unlock(pid_t pid);
+
+void creer_processus(const char *name, fnptr function);
+
+void schedule();
 
 #endif

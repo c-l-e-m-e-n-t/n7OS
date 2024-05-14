@@ -54,6 +54,9 @@ void update_horloge() {
     if (time % 100 == 0) {
         //update_snake();
     }
+    if (time % 10 == 0) {
+        schedule();
+    }
     
     //verifier si un processus doit se reveiller
     wakeUpList *tmp = wakeUp;

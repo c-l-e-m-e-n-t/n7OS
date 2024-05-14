@@ -7,6 +7,7 @@
 #include <n7OS/keyboard.h>
 #include <n7OS/paging.h>
 #include <n7OS/kheap.h>
+#include "/home/ccognard/Annee2/S2/Systeme/Projet/n7OS/bin/processus.h"
 
 void kernel_start(void)
 {
@@ -28,9 +29,9 @@ void kernel_start(void)
     // lancement des interruptions
     sti();
 
-
-    set_cursor2(0, 0);
-
+    //initialisation des processus
+    creer_processus("idle", idle);
+    creer_processus("proc1", processus1);
     
     // on ne doit jamais sortir de kernel_start
     while (1) {
