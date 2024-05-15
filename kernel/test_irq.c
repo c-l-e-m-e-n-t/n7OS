@@ -24,7 +24,6 @@ void handler_50() {
 
 void handler_32() {
     outb(0x20, 0x20);
-    time ++;
     update_horloge();
 }
 

@@ -47,6 +47,7 @@ void affichage_time() {
 
 //refresh de l'affichage de l'horloge
 void update_horloge() {
+    time ++;
     s = (time/1000)%60;
     m = ((time/1000)%3600)/60;
     h = ((time/1000)/3600)%24;

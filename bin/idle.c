@@ -1,7 +1,6 @@
 #include <stdio.h>
 void idle() {
-    printf("Idle process\n");
-    while (1) {
-        
+    while (1){
+        printf("Hello world from idle\n");
     }
 }

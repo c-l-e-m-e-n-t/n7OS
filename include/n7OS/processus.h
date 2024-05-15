@@ -23,8 +23,9 @@ typedef struct {
     char *description;
     processus_state_t state;
     fnptr function;
-    uint32_t *stack;
+    uint32_t stack[1024];
     uint32_t regs[5];
+    uint32_t priorite;
 } processus_t;
 
 pid_t fork(const char *name, fnptr function);
@@ -37,7 +38,7 @@ int sleep(uint32_t time);
 
 int unlock(pid_t pid);
 
-void creer_processus(const char *name, fnptr function);
+void creer_processus(const char *name, fnptr function, uint32_t priorite);
 
 void schedule();
 

@@ -7,6 +7,7 @@
 #include <n7OS/keyboard.h>
 #include <n7OS/paging.h>
 #include <n7OS/kheap.h>
+#include <unistd.h>
 #include "../bin/processus.h"
 
 void kernel_start(void)
@@ -31,10 +32,17 @@ void kernel_start(void)
 
     //initialisation des processus
     init_processus();
-    creer_processus("idle", idle);
-    creer_processus("proc1", processus1);
-    //creer_processus("proc1", processus1);
+    creer_processus("proc1", processus1, 0);
+    creer_processus("proc2", processus2, 0);
+    creer_processus("proc3", processus3, 2);
+
+
+    creer_processus("idle", idle, 1);
     
+    
+    idle();
+    
+    syscall1(int, shutdown, int, n);
     // on ne doit jamais sortir de kernel_start
     while (1) {
 
